@@ -1,2 +1,2 @@
-# ems
+# Hangry Panda EMS
 Employee Management System
