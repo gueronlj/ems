@@ -56,17 +56,19 @@ admin.put('/:id', (req, res) => {
 
 //-------------Add shift to employee schedule
 admin.put('/:id/new-shift',(req, res) => {
-   let date = req.body.date
-   let start = req.body.start
-   let end = req.body.end
-   let period = req.body.period
+   let timeStrings = [req.body.start, req.body.end ]
+   const timeDecimals = timeStrings.map((string) => {
+      new Date(string).getTime()
+   })
 
+   let period = req.body.period
+   let date = req.body.date
    Employee.findOne(
       {id:req.params.id},(error, employee) => {
          if(error){
             res.json(error)
          }else{
-            let object = {date: date, start:start, end:end, period:period}
+            let object = {date: date, start:timeStrings[0], end:timeStrings[1], period:period}
             employee.schedule.push(object)
             employee.save()
             res.json(employee)
@@ -105,25 +107,31 @@ admin.get('/:id/report',(req, res) => {
             let totalLunch = 0
             let totalDinner = 0
             let totalDouble = 0
-            let totalHourlyWages = totalHours * data.perHour
             let totalShiftWages = 0
+
             data.schedule.forEach(element => {
-               totalHours += (element.end-element.start)
+               let end = new Date(element.end)
+               let start = new Date(element.start)
+               let hours = end.getHours()-start.getHours()
+               let minutes = Math.abs(end.getMinutes()-start.getMinutes())
+   
                if(element.period == 'lunch'){
+                  totalHours += (hours+(minutes/60))
                   totalLunch ++
                   totalShiftWages += data.perDiem
                }
                if(element.period == 'dinner'){
+                  totalHours += hours
                   totalDinner ++
                   totalShiftWages += data.perDiem
                }
                if(element.period == 'double'){
+                  totalHours += hours
                   totalDouble ++
                   totalShiftWages += (data.perDiem * 1.5)
                }
             })
             totalHourlyWages = totalHours * data.perHour
-            console.log(totalShiftWages);
             let report={
                totalHours: totalHours,
                totalLunch: totalLunch,
