@@ -33,6 +33,12 @@ app.use(cors())
 const employeesController = require('./controllers/employees_controller.js')
 app.use('/admin', employeesController)
 
+const scheduleController =  require('./controllers/schedule_controller.js')
+app.use('/schedule', scheduleController)
+
+const reportController = require('./controllers/report_controller.js')
+app.use('/report', reportController)
+
 //CONNECTIONS
 mongoose.connect(MONGODB_URI)
 db.on('error', (error) => console.log(error.message + ' is Mongod not running?'));
