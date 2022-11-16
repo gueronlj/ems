@@ -26,14 +26,14 @@ schedule.put('/:id/new-shift',(req, res) => {
 })
 
 //-------------Remove shift
-schedule.put('/:id/search-date', (req, res) => {
-   let date = req.body.date
+//TODO:Change from date to some kind of unique ID
+schedule.put('/:id/remove', (req, res) => {
+   let id = req.body.start
    Employee.findOne(
       {id:req.params.id},(error, employee) => {
          const findIndex = () => {
             for (let i = 0; i<employee.schedule.length; i++){
-               if (employee.schedule.date === date ){
-                  console.log(i);
+               if (employee.schedule.start === id ){
                   return i
                }
             }
