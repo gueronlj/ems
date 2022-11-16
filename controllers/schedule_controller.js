@@ -11,8 +11,7 @@ schedule.put('/:id/new-shift',(req, res) => {
 
    let period = req.body.period
    let date = req.body.date
-   Employee.findOne(
-      {id:req.params.id},(error, employee) => {
+   Employee.findById(req.params.id,(error, employee) => {
          if(error){
             res.json(error)
          }else{
