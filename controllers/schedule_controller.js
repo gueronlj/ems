@@ -15,7 +15,7 @@ schedule.put('/:id/new-shift',(req, res) => {
          if(error){
             res.json(error)
          }else{
-            let object = {date: date, start:timeStrings[0], end:timeStrings[1], period:period}
+            let object = { id:(Math.random()*(100000-1)+1).toString(), date: date, start:timeStrings[0], end:timeStrings[1], period:period}
             employee.schedule.push(object)
             employee.save()
             res.json(employee)
@@ -25,14 +25,13 @@ schedule.put('/:id/new-shift',(req, res) => {
 })
 
 //-------------Remove shift
-//TODO:Change from date to some kind of unique ID
-schedule.put('/:id/remove', (req, res) => {
-   let id = req.body.start
-   Employee.findOne(
-      {id:req.params.id},(error, employee) => {
+schedule.put('/:id/remove/:shiftId', (req, res) => {
+   let id = req.params.shiftId
+   Employee.findById(
+      req.params.id,(error, employee) => {
          const findIndex = () => {
             for (let i = 0; i<employee.schedule.length; i++){
-               if (employee.schedule.start === id ){
+               if (employee.schedule[i].id === id){
                   return i
                }
             }
@@ -41,6 +40,50 @@ schedule.put('/:id/remove', (req, res) => {
          employee.save()
          res.json(employee)
       })
+})
+
+//------------Modify shift
+schedule.put('/:id/edit/:shiftId', (req, res) => {
+   Employee.findById(
+      req.params.id, (error, foundEmployee) => {
+         let id = req.params.shiftId
+         for (let i = 0; i<foundEmployee.schedule.length; i++){
+            let shift = foundEmployee.schedule[i]
+            if (shift.id === id){
+               Employee.update(
+                  {foundEmployee.schedule[i]:id},
+                  {$set:{
+                     name:req.body.name,
+                     start:req.bodystart,
+                     end:req.body.end,
+                     period:req.body.period
+                  }},
+                  (error, shift) => {
+                     res.json(shift)
+                     console.log(shift);
+                  }
+               )
+            }
+         }
+      }
+   )
+})
+
+//------------get shift info
+schedule.get('/:id/:shiftId', (req, res) => {
+   let id = req.params.shiftId
+   Employee.findById(
+      req.params.id, (error, employee) => {
+         const findShift = () => {
+            for (let i = 0; i<employee.schedule.length; i++){
+               if (employee.schedule[i].id === id){
+                  return employee.schedule[i]
+               }
+            }
+         }
+         res.json(findShift())
+      }
+   )
 })
 
 module.exports = schedule
