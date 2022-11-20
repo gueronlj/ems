@@ -42,31 +42,28 @@ schedule.put('/:id/remove/:shiftId', (req, res) => {
       })
 })
 
-//------------Modify shift
+//---------------Modify shift
 schedule.put('/:id/edit/:shiftId', (req, res) => {
-   Employee.findById(
-      req.params.id, (error, foundEmployee) => {
-         let id = req.params.shiftId
-         for (let i = 0; i<foundEmployee.schedule.length; i++){
-            let shift = foundEmployee.schedule[i]
-            if (shift.id === id){
-               Employee.update(
-                  {foundEmployee.schedule[i]:id},
-                  {$set:{
-                     name:req.body.name,
-                     start:req.bodystart,
-                     end:req.body.end,
-                     period:req.body.period
-                  }},
-                  (error, shift) => {
-                     res.json(shift)
-                     console.log(shift);
-                  }
-               )
-            }
-         }
+   const query = {"schedule.id":req.params.shiftId}
+   const update = {
+      "$set":{
+         "schedule.$.id":req.params.shiftId,
+         "schedule.$.date":req.body.date,
+         "schedule.$.start":req.body.start,
+         "schedule.$.end":req.body.end,
+         "schedule.$.period":req.body.period,
       }
-   )
+   }
+   Employee.updateOne(query, update, (error, employee) => {
+      if(error){console.log(error);}
+      else{
+         Employee.findById(
+            req.params.id, (error, employee) => {
+               res.json(employee.schedule)
+            }
+         )
+      }
+   })
 })
 
 //------------get shift info
