@@ -65,6 +65,18 @@ schedule.put('/:id/edit/:shiftId', (req, res) => {
       }
    })
 })
+//-----------Clocking out (return clockin shift ID)
+schedule.get('/:id/clockout', (req, res) => {
+   Employee.findById( req.params.id, (error, employee) => {
+      if(error){
+         res.json(error)
+      }else{
+         const lastIndex = employee.schedule.length-1
+         const lastShift = employee.schedule[lastIndex]
+         res.json(lastShift)
+      }
+   })
+})
 
 //------------get shift info
 schedule.get('/:id/:shiftId', (req, res) => {
