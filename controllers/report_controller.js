@@ -1,7 +1,7 @@
 const express = require('express')
 const report = express.Router()
 const Employee = require('../models/employee.js')
-const {differenceInHours, parseISO} = require('date-fns');
+const {differenceInMinutes, parseISO} = require('date-fns');
 
 //----------Create report of shifts in between 2 given dates
 report.get('/:id/:start/:end',(req, res) => {
@@ -23,7 +23,7 @@ report.get('/:id/:start/:end',(req, res) => {
            if(shift.start && shift.end){
               let startTime = parseISO(shift.start)
               let endTime = parseISO(shift.end)
-              let hoursInShift = differenceInHours(endTime, startTime)
+              let hoursInShift = (differenceInMinutes(endTime, startTime)/60).toPrecision(4)
               totalHours += hoursInShift
            }
          })
