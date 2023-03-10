@@ -12,22 +12,22 @@ const db = mongoose.connection;
 const PORT = process.env.PORT || 3001;
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// const jwtCheck = () => jwt({
-//       secret: jwks.expressJwtSecret({
-//           cache: true,
-//           rateLimit: true,
-//           jwksRequestsPerMinute: 5,
-//           jwksUri: 'https://dev-rqbvmubwc6xeogdn.us.auth0.com/.well-known/jwks.json'
-//     }),
-//     audience: 'http://localhost:3000',
-//     issuer: 'https://dev-rqbvmubwc6xeogdn.us.auth0.com/',
-//     algorithms: ['RS256']
-// });
+const jwtCheck = () => jwt({
+      secret: jwks.expressJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+          jwksUri: 'https://dev-rqbvmubwc6xeogdn.us.auth0.com/.well-known/jwks.json'
+    }),
+    audience: 'http://localhost:3000',
+    issuer: 'https://dev-rqbvmubwc6xeogdn.us.auth0.com/',
+    algorithms: ['RS256']
+});
 
 //MIDDLEWARE
 app.use(express.json())
 app.use(cors())
-// app.use(jwtCheck);
+app.use(jwtCheck);
 
 //CONTROLLERS
 const employeesController = require('./controllers/employees_controller.js')
