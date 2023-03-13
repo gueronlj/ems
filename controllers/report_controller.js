@@ -24,10 +24,11 @@ report.get('/:id/:start/:end',(req, res) => {
               let startTime = parseISO(shift.start)
               let endTime = parseISO(shift.end)
               let hoursInShift = (differenceInMinutes(endTime, startTime)/60).toPrecision(4)
-              totalHours += hoursInShift
+              totalHours += parseFloat(hoursInShift)
+              console.log(hoursInShift);
            }
          })
-         console.log(totalDailyWages, totalHourlyWages, data.perHour);
+         console.log(totalHours, 'hourly wages', totalHours * data.perHour);
          res.json({
            schedule:filteredList,
            totalDays:filteredList.length,
