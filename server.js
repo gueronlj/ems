@@ -14,7 +14,7 @@ const { auth, requiredScopes } = require('express-oauth2-jwt-bearer');
 // Authorization middleware. When used, the Access Token must
 // exist and be verified against the Auth0 JSON Web Key Set.
 const checkJwt = auth({
-  audience: 'http://localhost:3000',
+  audience:['http://localhost:3001/admin','http://localhost:3001/schedule', 'http://localhost:3001/report'],
   issuerBaseURL: `https://dev-rqbvmubwc6xeogdn.us.auth0.com/`,
 });
 
@@ -23,18 +23,18 @@ const checkScopes = requiredScopes('user:admin');
 //MIDDLEWARE
 app.use(express.json())
 app.use(cors())
-app.use(checkJwt);
-app.use(checkScopes)
+// app.use(checkJwt);
+// app.use(checkScopes)
 
 //CONTROLLERS
 const employeesController = require('./controllers/employees_controller.js')
-app.use('/admin', employeesController)
+app.use('/admin', checkJwt, employeesController)
 
 const scheduleController =  require('./controllers/schedule_controller.js')
-app.use('/schedule', scheduleController)
+app.use('/schedule', checkJwt, scheduleController)
 
 const reportController = require('./controllers/report_controller.js')
-app.use('/report', reportController)
+app.use('/report', checkJwt, reportController)
 
 //CONNECTIONS
 mongoose.connect(MONGODB_URI)
