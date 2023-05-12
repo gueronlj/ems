@@ -7,6 +7,7 @@ const employeeSchema = new Schema({
    schedule: Array,
    perDiem: Number,
    perHour: Number,
+   clockedIn: Boolean,
 })
 
 const Employee = mongoose.model('Employee', employeeSchema)
