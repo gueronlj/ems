@@ -12,7 +12,7 @@ report.get('/:id/:start/:end',(req, res) => {
       if(error){
          res.json(error)
       }else{
-         const filteredList = data?.schedule?.filter(shift => (
+         const filteredList = data.schedule.filter(shift => (
             //if shift.date is in between filterStart and filterEnd, map to new array
             shift.date>=startLimit && shift.date<=endLimit
          ))
