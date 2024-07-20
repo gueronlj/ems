@@ -22,7 +22,7 @@ const checkScopes = requiredScopes('user:admin');
 
 //MIDDLEWARE
 app.use(express.json())
-app.use(cors())
+app.use(cors)
 // app.use(checkJwt);
 // app.use(checkScopes)
 
